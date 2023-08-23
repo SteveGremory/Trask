@@ -1,5 +1,4 @@
 import Image from "next/image";
-import BackgroundImage from "@/public/background.png";
 import { poppins, raleway } from "../layout";
 
 function getdateformatted() {
@@ -34,8 +33,6 @@ function getdateformatted() {
 
   return `${day_name}, ${todays_date} ${month}`;
 }
-
-const array = [...Array(10)];
 
 const Item = () => {
   return (
@@ -121,7 +118,7 @@ export default function Home() {
                   <ul
                     className={`${poppins.className} flex flex-col mt-8 h-full`}
                   >
-                    {Array.from({ length: 10 }, (_, i) => (
+                    {Array.from({ length: 100 }, (_, i) => (
                       <Item key={i} />
                     ))}
                   </ul>
@@ -151,7 +148,7 @@ export default function Home() {
                   <ul
                     className={`${poppins.className} flex flex-col mt-8 h-full`}
                   >
-                    {Array.from({ length: 10 }, (_, i) => (
+                    {Array.from({ length: 100 }, (_, i) => (
                       <Item key={i} />
                     ))}
                   </ul>
