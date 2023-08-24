@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Raleway, Poppins } from "next/font/google";
+import { Providers } from "./providers";
 
 export const raleway = Raleway({
   weight: ["400", "600"],
@@ -14,10 +15,10 @@ export const poppins = Poppins({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Trask",
-  description: "Manage your tasks.",
-};
+// export const metadata: Metadata = {
+//   title: "Trask",
+//   description: "Manage your tasks.",
+// };
 
 export default function RootLayout({
   children,
@@ -26,7 +27,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={poppins.className}>{children}</body>
+      <body className={poppins.className}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

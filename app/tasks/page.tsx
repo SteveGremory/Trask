@@ -1,7 +1,20 @@
+"use client";
+import React from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { poppins, raleway } from "../layout";
 import { Task, TaskInterface } from "@/components/task/task";
 import { Note, NoteInterface } from "@/components/notes/notes";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Textarea,
+  Input,
+  useDisclosure,
+} from "@nextui-org/react";
 
 function getdateformatted() {
   var days = [
@@ -36,7 +49,7 @@ function getdateformatted() {
   return `${day_name}, ${todays_date} ${month}`;
 }
 
-const tasks = [
+const tasks_arr = [
   {
     name: "Code",
     time: "10:00AM, 27th Feb, 2024",
@@ -59,7 +72,7 @@ const tasks = [
   },
 ];
 
-const notes = [
+const notes_arr = [
   {
     name: "C++ Pt. 1",
     time: "10:00AM, 27th Feb, 2024",
@@ -82,17 +95,91 @@ const notes = [
   },
 ];
 
+function CustomModal(props: any) {
+  const [title, setTitle] = React.useState("");
+  return (
+    <Modal
+      isOpen={props.isOpen}
+      onOpenChange={props.onOpenChange}
+      size="5xl"
+      classNames={{
+        body: "py-6",
+        base: "bg-opacity-60 backdrop-blur-md text-black text-opacity-50",
+        header: "",
+        footer: "",
+        closeButton: "hover:bg-white/5 active:bg-white/10",
+      }}
+    >
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader></ModalHeader>
+            <ModalBody>
+              <div className="flex flex-col">
+                <div className="title">
+                  <h1 className="text-6xl font-semibold">Title</h1>
+                  <h1 className="text-2xl font-regular mt-2">
+                    Date, Start time - End time
+                  </h1>
+                </div>
+
+                <div className="mt-8"></div>
+
+                <div className="tags flex flex-row">
+                  <button className="bg-white rounded-full text-2xl p-2 pl-4 pr-4 text-black">
+                    tags
+                  </button>
+                  <button className="ml-2">
+                    <Image
+                      priority
+                      src="/plus.svg"
+                      height={32}
+                      width={32}
+                      alt="Add a task"
+                    />
+                  </button>
+                </div>
+
+                <div className="mt-8"></div>
+
+                <div className="notes">
+                  <Textarea
+                    label="Notes"
+                    labelPlacement="inside"
+                    size="lg"
+                    minRows={8}
+                    placeholder="Add some notes!"
+                    className="max-w"
+                    classNames={{
+                      label: "text-6xl text-black font-semibold",
+                      input: "text-1xl",
+                    }}
+                  />
+                </div>
+              </div>
+            </ModalBody>
+            <ModalFooter></ModalFooter>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
+  );
+}
+
 export default function Home() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [tasks, setTask] = useState(tasks_arr);
+  const [notes, setNote] = useState(notes_arr);
+
   return (
     <div className="h-screen relative">
       <Image
         src="/background.png"
+        className="object-cover object-center h-full"
         layout="fill"
-        objectFit="cover"
-        objectPosition="center"
         alt="Background"
       />
-      {/* Outer Flexbox for the division into 20:80 */}
+      {/* Outer Flexbox for the division into 25:75 */}
       <div className="flex flex-row">
         {/* Sidebar content goes here */}
         <div className="hidden md:block w-1/4 left-0 top-0 h-screen bg-white bg-opacity-20 backdrop-blur-md">
@@ -126,7 +213,7 @@ export default function Home() {
                   >
                     <h2 className={`font-semibold text-6xl`}>Tasks</h2>
 
-                    <button>
+                    <button onClick={onOpen}>
                       <Image
                         priority
                         src="/plus.svg"
@@ -140,7 +227,7 @@ export default function Home() {
                   <ul className={`${poppins.className} flex flex-col mt-8`}>
                     {tasks.map((task: TaskInterface) => (
                       <li key={task.name}>
-                        <Task name={task.name} time={task.time} />
+                        <Task tasksArray={tasks} task={task} setter={setTask} />
                       </li>
                     ))}
                   </ul>
@@ -170,7 +257,7 @@ export default function Home() {
                   <ul className={`${poppins.className} flex flex-col mt-8`}>
                     {notes.map((note: NoteInterface) => (
                       <li key={note.name}>
-                        <Note name={note.name} time={note.time} />
+                        <Note noteArray={notes} note={note} setter={setNote} />
                       </li>
                     ))}
                   </ul>
@@ -180,6 +267,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <CustomModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 }
