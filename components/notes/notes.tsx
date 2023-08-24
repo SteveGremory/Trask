@@ -4,10 +4,11 @@ import Image from "next/image";
 export interface NoteInterface {
   name: string;
   time: string;
+  key: number;
 }
 interface Props {
   note: NoteInterface;
-  noteArray: NoteInterface[];
+  index: number;
   setter: any;
 }
 
@@ -31,12 +32,13 @@ export const Note: NextPage<Props> = (props) => {
               width={48}
               alt="Add a Note"
               onClick={() => {
-                let arr = [...props.noteArray];
-                const index = arr.indexOf(props.note, 0);
-                if (index > -1) {
-                  arr.splice(index, 1);
-                }
-                props.setter(arr);
+                props.setter((prevItems: any) => {
+                  let arr = [...prevItems];
+                  if (props.index > -1) {
+                    arr.splice(props.index, 1);
+                  }
+                  return arr;
+                });
               }}
             />
           </button>

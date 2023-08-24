@@ -5,14 +5,14 @@ import {
   ModalBody,
   ModalFooter,
   Textarea,
-  Input,
-  useDisclosure,
 } from "@nextui-org/react";
 import Image from "next/image";
 import React from "react";
 
 export default function CustomModal(props: any) {
   const [title, setTitle] = React.useState("");
+  const [subTitle, setSubTitle] = React.useState("");
+
   return (
     <Modal
       isOpen={props.isOpen}
@@ -31,13 +31,24 @@ export default function CustomModal(props: any) {
           <>
             <ModalHeader></ModalHeader>
             <ModalBody>
-              <div className="flex flex-col">
-                <div className="title">
-                  <h1 className="text-6xl font-semibold">Title</h1>
-                  <h1 className="text-2xl font-regular mt-2">
-                    Date, Start time - End time
-                  </h1>
-                </div>
+              <div className="">
+                <form>
+                  <div className="title flex flex-col">
+                    <input
+                      className="text-6xl font-semibold bg-transparent outline-none placeholder-current"
+                      placeholder="Title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+
+                    <input
+                      className="text-2xl font-regular bg-transparent outline-none placeholder-current"
+                      placeholder="Subtitle"
+                      value={subTitle}
+                      onChange={(e) => setSubTitle(e.target.value)}
+                    />
+                  </div>
+                </form>
 
                 <div className="mt-8"></div>
 
@@ -67,7 +78,7 @@ export default function CustomModal(props: any) {
                     placeholder="Add some notes!"
                     className="max-w"
                     classNames={{
-                      label: "text-6xl text-black font-semibold",
+                      label: "text-6xl font-semibold",
                       input: "text-1xl",
                     }}
                   />

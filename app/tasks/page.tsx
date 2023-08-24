@@ -7,6 +7,7 @@ import { Task, TaskInterface } from "@/components/task/task";
 import { Note, NoteInterface } from "@/components/notes/notes";
 import CustomModal from "@/components/modal/modal";
 import { useDisclosure } from "@nextui-org/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function getdateformatted() {
   var days = [
@@ -41,26 +42,31 @@ function getdateformatted() {
   return `${day_name}, ${todays_date} ${month}`;
 }
 
-const tasks_arr = [
+const tasks_arr: TaskInterface[] = [
   {
     name: "Code",
     time: "10:00AM, 27th Feb, 2024",
+    key: 1,
   },
   {
     name: "Read",
     time: "11:00AM, 27th Feb, 2024",
+    key: 2,
   },
   {
     name: "Eat",
     time: "12:00PM, 27th Feb, 2024",
+    key: 3,
   },
   {
     name: "Sleep",
     time: "1:00PM, 27th Feb, 2024",
+    key: 4,
   },
   {
     name: "Repeat",
     time: "2:00PM, 27th Feb, 2024",
+    key: 5,
   },
 ];
 
@@ -68,22 +74,27 @@ const notes_arr = [
   {
     name: "C++ Pt. 1",
     time: "10:00AM, 27th Feb, 2024",
+    key: 1,
   },
   {
     name: "C++ Pt. 2",
     time: "11:00AM, 27th Feb, 2024",
+    key: 2,
   },
   {
     name: "C++ Pt. 3",
     time: "12:00PM, 27th Feb, 2024",
+    key: 3,
   },
   {
     name: "C++ Pt. 4",
     time: "1:00PM, 27th Feb, 2024",
+    key: 4,
   },
   {
     name: "C++ Pt. 5",
     time: "2:00PM, 27th Feb, 2024",
+    key: 5,
   },
 ];
 
@@ -104,7 +115,7 @@ export default function Home() {
       <div className="flex flex-row">
         {/* Sidebar content goes here */}
         <div className="hidden md:block w-1/4 left-0 top-0 h-screen bg-white bg-opacity-20 backdrop-blur-md">
-          <div className="">
+          <div>
             <div
               className={`mt-8 m-4 text-white font-normal text-left text-5xl ${raleway.className}`}
             >
@@ -145,13 +156,26 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <ul className={`${poppins.className} flex flex-col mt-8`}>
-                    {tasks.map((task: TaskInterface) => (
-                      <li key={task.name}>
-                        <Task tasksArray={tasks} task={task} setter={setTask} />
-                      </li>
-                    ))}
-                  </ul>
+                  <motion.ul
+                    className={`${poppins.className} flex flex-col mt-8`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <AnimatePresence>
+                      {tasks.map((task: TaskInterface, index) => (
+                        <motion.li
+                          initial={{ opacity: 0, y: 0 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1, duration: 0.2 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          key={task.key}
+                        >
+                          <Task index={index} task={task} setter={setTask} />
+                        </motion.li>
+                      ))}
+                    </AnimatePresence>
+                  </motion.ul>
                 </div>
               </div>
             </div>
@@ -175,13 +199,26 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <ul className={`${poppins.className} flex flex-col mt-8`}>
-                    {notes.map((note: NoteInterface) => (
-                      <li key={note.name}>
-                        <Note noteArray={notes} note={note} setter={setNote} />
-                      </li>
-                    ))}
-                  </ul>
+                  <motion.ul
+                    className={`${poppins.className} flex flex-col mt-8`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <AnimatePresence>
+                      {notes.map((note: NoteInterface, index) => (
+                        <motion.li
+                          initial={{ opacity: 0, y: 0 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1, duration: 0.2 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          key={note.key}
+                        >
+                          <Note index={index} note={note} setter={setNote} />
+                        </motion.li>
+                      ))}
+                    </AnimatePresence>
+                  </motion.ul>
                 </div>
               </div>
             </div>

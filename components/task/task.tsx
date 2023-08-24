@@ -1,15 +1,17 @@
 import { NextPage } from "next";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface TaskInterface {
   name: string;
   time: string;
+  key: number;
 }
 
 interface Props {
   task: TaskInterface;
-  tasksArray: TaskInterface[];
   setter: any;
+  index: number;
 }
 
 export const Task: NextPage<Props> = (props) => {
@@ -24,7 +26,7 @@ export const Task: NextPage<Props> = (props) => {
             </h2>
             <h2 className={`text-[#565656] text-2xl`}>{props.task.time}</h2>
           </div>
-          <button>
+          <motion.button>
             <Image
               priority
               src="/minus.svg"
@@ -32,15 +34,16 @@ export const Task: NextPage<Props> = (props) => {
               width={48}
               alt="Remove a task"
               onClick={() => {
-                let arr = [...props.tasksArray];
-                const index = arr.indexOf(props.task, 0);
-                if (index > -1) {
-                  arr.splice(index, 1);
-                }
-                props.setter(arr);
+                props.setter((prevItems: any) => {
+                  let arr = [...prevItems];
+                  if (props.index > -1) {
+                    arr.splice(props.index, 1);
+                  }
+                  return arr;
+                });
               }}
             />
-          </button>
+          </motion.button>
         </div>
       </div>
       {/* Item ends */}
