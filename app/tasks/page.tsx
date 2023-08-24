@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { poppins, raleway } from "../layout";
+import { Task, TaskInterface } from "@/components/task/task";
+import { Note, NoteInterface } from "@/components/notes/notes";
 
 function getdateformatted() {
   var days = [
@@ -34,42 +36,62 @@ function getdateformatted() {
   return `${day_name}, ${todays_date} ${month}`;
 }
 
-const Item = () => {
-  return (
-    <>
-      {/* Item starts */}
-      <li className="mb-4 bg-white bg-opacity-[.36] backdrop-blur-md rounded-lg">
-        <div className="p-4 pl-4 flex justify-between">
-          <div className="text">
-            <h2 className={`text-black font-semibold text-3xl`}>Code</h2>
-            <h2 className={`text-[#565656] text-2xl`}>
-              10:00AM, 27th Feb, 2024
-            </h2>
-          </div>
-          <button>
-            <Image
-              priority
-              src="/minus.svg"
-              height={48}
-              width={48}
-              alt="Add a task"
-            />
-          </button>
-        </div>
-      </li>
-      {/* Item ends */}
-    </>
-  );
-};
+const tasks = [
+  {
+    name: "Code",
+    time: "10:00AM, 27th Feb, 2024",
+  },
+  {
+    name: "Read",
+    time: "11:00AM, 27th Feb, 2024",
+  },
+  {
+    name: "Eat",
+    time: "12:00PM, 27th Feb, 2024",
+  },
+  {
+    name: "Sleep",
+    time: "1:00PM, 27th Feb, 2024",
+  },
+  {
+    name: "Repeat",
+    time: "2:00PM, 27th Feb, 2024",
+  },
+];
+
+const notes = [
+  {
+    name: "C++ Pt. 1",
+    time: "10:00AM, 27th Feb, 2024",
+  },
+  {
+    name: "C++ Pt. 2",
+    time: "11:00AM, 27th Feb, 2024",
+  },
+  {
+    name: "C++ Pt. 3",
+    time: "12:00PM, 27th Feb, 2024",
+  },
+  {
+    name: "C++ Pt. 4",
+    time: "1:00PM, 27th Feb, 2024",
+  },
+  {
+    name: "C++ Pt. 5",
+    time: "2:00PM, 27th Feb, 2024",
+  },
+];
 
 export default function Home() {
   return (
-    <div
-      className="h-screen bg-cover bg-no-repeat"
-      style={{
-        backgroundImage: "url('/background.png')",
-      }}
-    >
+    <div className="h-screen relative">
+      <Image
+        src="/background.png"
+        layout="fill"
+        objectFit="cover"
+        objectPosition="center"
+        alt="Background"
+      />
       {/* Outer Flexbox for the division into 20:80 */}
       <div className="flex flex-row">
         {/* Sidebar content goes here */}
@@ -115,11 +137,11 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <ul
-                    className={`${poppins.className} flex flex-col mt-8 h-full`}
-                  >
-                    {Array.from({ length: 100 }, (_, i) => (
-                      <Item key={i} />
+                  <ul className={`${poppins.className} flex flex-col mt-8`}>
+                    {tasks.map((task: TaskInterface) => (
+                      <li key={task.name}>
+                        <Task name={task.name} time={task.time} />
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -145,11 +167,11 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <ul
-                    className={`${poppins.className} flex flex-col mt-8 h-full`}
-                  >
-                    {Array.from({ length: 100 }, (_, i) => (
-                      <Item key={i} />
+                  <ul className={`${poppins.className} flex flex-col mt-8`}>
+                    {notes.map((note: NoteInterface) => (
+                      <li key={note.name}>
+                        <Note name={note.name} time={note.time} />
+                      </li>
                     ))}
                   </ul>
                 </div>
