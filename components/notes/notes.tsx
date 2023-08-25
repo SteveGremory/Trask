@@ -1,5 +1,5 @@
 "use client";
-import { poppins } from "@/app/layout";
+import { poppins } from "@/app/fonts";
 import { AnimatePresence, motion } from "framer-motion";
 import { NextPage } from "next";
 import Image from "next/image";
@@ -22,7 +22,7 @@ const Note: NextPage<Props> = (props) => {
         className={`${poppins.className} flex flex-col mt-8`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.2 }}
       >
         <AnimatePresence>
           {notes.map((note: NoteInterface, index: number) => (

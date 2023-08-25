@@ -1,12 +1,12 @@
 "use client";
+import { Textarea } from "@nextui-org/input";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Textarea,
-} from "@nextui-org/react";
+} from "@nextui-org/modal";
 import Image from "next/image";
 import React from "react";
 

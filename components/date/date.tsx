@@ -1,9 +1,9 @@
 "use client";
 
-import { raleway } from "@/app/layout";
+import { raleway } from "@/app/fonts";
 import React, { useState } from "react";
 
-const Date = () => {
+const GetDate = () => {
   function getdateformatted() {
     var days = [
       "Sundaay",
@@ -28,7 +28,7 @@ const Date = () => {
       "November",
       "December",
     ];
-    let date: any = new window.Date();
+    let date: any = new Date();
 
     let day_name: string = days[date.getDay()];
     let todays_date: number = date.getDate();
@@ -48,4 +48,4 @@ const Date = () => {
   );
 };
 
-export default Date;
+export default GetDate;

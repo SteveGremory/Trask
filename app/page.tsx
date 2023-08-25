@@ -1,17 +1,13 @@
 "use client";
-import React from "react";
-import dynamic from "next/dynamic";
+import React, { useEffect } from "react";
 import Image from "next/image";
-import { poppins, raleway } from "./layout";
 
-const Task = dynamic(() => import("@/components/task/task"), { ssr: false });
-const Note = dynamic(() => import("@/components/notes/notes"), { ssr: false });
-const Date = dynamic(() => import("@/components/date/date"), { ssr: false });
-const CustomModal = dynamic(() => import("@/components/modal/modal"), {
-  ssr: false,
-});
-
-import { useDisclosure } from "@nextui-org/react";
+import Task from "@/components/task/task";
+import Note from "@/components/notes/notes";
+import Date from "@/components/date/date";
+import CustomModal from "@/components/modal/modal";
+import { useDisclosure } from "@nextui-org/modal";
+import { raleway } from "./fonts";
 
 const tasks_arr = [
   {
@@ -72,6 +68,10 @@ const notes_arr = [
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  useEffect(() => {
+    document.getElementById("modalOpener")?.addEventListener("click", onOpen);
+  }, [onOpen]);
+
   return (
     <div className="h-screen relative">
       <Image
@@ -111,7 +111,7 @@ export default function Home() {
                   >
                     <h2 className={`font-semibold text-6xl`}>Tasks</h2>
 
-                    <button onClick={onOpen}>
+                    <button id="modalOpener">
                       <Image
                         priority
                         src="/plus.svg"

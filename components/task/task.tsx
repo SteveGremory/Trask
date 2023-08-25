@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { poppins } from "@/app/layout";
+import { poppins } from "@/app/fonts";
 
 export interface TaskInterface {
   name: string;
@@ -24,7 +24,7 @@ const Task: NextPage<Props> = (props) => {
         className={`${poppins.className} flex flex-col mt-8`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.2 }}
       >
         <AnimatePresence>
           {tasks.map((task: TaskInterface, index: number) => (
