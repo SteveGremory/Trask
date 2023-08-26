@@ -38,7 +38,6 @@ const GetDate = () => {
   }
   const [date, setDate] = useState(getdateformatted());
 
-  // I didn't have useEffect before in this component, hence it was never triggering a re-render !
   React.useEffect(() => {
     setDate(getdateformatted());
   }, []);

@@ -1,57 +1,60 @@
 "use client";
-import { poppins } from "@/app/fonts";
-import { AnimatePresence, motion } from "framer-motion";
 import { NextPage } from "next";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { poppins } from "@/app/fonts";
 
-export interface NoteInterface {
+export interface ItemInterface {
   name: string;
-  time: string;
+  subtitle: string;
   key: number;
 }
+
 interface Props {
-  notes_array: NoteInterface[];
+  items: ItemInterface[];
 }
 
-const Note: NextPage<Props> = (props) => {
-  const [notes, setNotes] = useState(props.notes_array);
+const Item: NextPage<Props> = (props) => {
+  const [items, setItems] = useState(props.items);
+
   return (
     <>
       <motion.ul
         className={`${poppins.className} flex flex-col mt-8`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.5 }}
       >
         <AnimatePresence>
-          {notes.map((note: NoteInterface, index: number) => (
+          {items.map((item: ItemInterface, index: number) => (
             <motion.li
               initial={{ opacity: 0, y: 0 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.2 }}
               exit={{ opacity: 0, y: 10 }}
-              key={note.key}
+              key={item.key}
             >
               {/* Item starts */}
               <div className="mb-4 bg-white bg-opacity-[.36] backdrop-blur-md rounded-lg">
                 <div className="p-4 pl-4 flex justify-between">
                   <div className="text">
                     <h2 className={`text-black font-semibold text-3xl`}>
-                      {note.name}
+                      {item.name}
                     </h2>
-                    <h2 className={`text-[#565656] text-2xl`}>{note.time}</h2>
+                    <h2 className={`text-[#565656] text-2xl`}>
+                      {item.subtitle}
+                    </h2>
                   </div>
                   <motion.button>
                     <Image
-                      priority
                       src="/minus.svg"
                       height={48}
                       width={48}
-                      alt="Remove a note"
+                      alt="Remove a task"
                       onClick={() =>
-                        setNotes((prevNotes) =>
-                          prevNotes.filter((_, i) => i !== index)
+                        setItems((prevItems) =>
+                          prevItems.filter((_, i) => i !== index)
                         )
                       }
                     />
@@ -67,4 +70,4 @@ const Note: NextPage<Props> = (props) => {
   );
 };
 
-export default Note;
+export default Item;

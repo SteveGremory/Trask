@@ -1,66 +1,65 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 
-import Task from "@/components/task/task";
-import Note from "@/components/notes/notes";
+import Item from "@/components/item/item";
 import Date from "@/components/date/date";
 import CustomModal from "@/components/modal/modal";
 import { useDisclosure } from "@nextui-org/modal";
 import { raleway } from "./fonts";
 
-const tasks_arr = [
+const tasks = [
   {
     name: "Code",
-    time: "10:00AM, 27th Feb, 2024",
+    subtitle: "10:00AM, 27th Feb, 2024",
     key: 1,
   },
   {
     name: "Read",
-    time: "11:00AM, 27th Feb, 2024",
+    subtitle: "11:00AM, 27th Feb, 2024",
     key: 2,
   },
   {
     name: "Eat",
-    time: "12:00PM, 27th Feb, 2024",
+    subtitle: "12:00PM, 27th Feb, 2024",
     key: 3,
   },
   {
     name: "Sleep",
-    time: "1:00PM, 27th Feb, 2024",
+    subtitle: "1:00PM, 27th Feb, 2024",
     key: 4,
   },
   {
     name: "Repeat",
-    time: "2:00PM, 27th Feb, 2024",
+    subtitle: "2:00PM, 27th Feb, 2024",
     key: 5,
   },
 ];
 
-const notes_arr = [
+const notes = [
   {
     name: "C++ Pt. 1",
-    time: "10:00AM, 27th Feb, 2024",
+    subtitle: "10:00AM, 27th Feb, 2024",
     key: 1,
   },
   {
     name: "C++ Pt. 2",
-    time: "11:00AM, 27th Feb, 2024",
+    subtitle: "11:00AM, 27th Feb, 2024",
     key: 2,
   },
   {
     name: "C++ Pt. 3",
-    time: "12:00PM, 27th Feb, 2024",
+    subtitle: "12:00PM, 27th Feb, 2024",
     key: 3,
   },
   {
     name: "C++ Pt. 4",
-    time: "1:00PM, 27th Feb, 2024",
+    subtitle: "1:00PM, 27th Feb, 2024",
     key: 4,
   },
   {
     name: "C++ Pt. 5",
-    time: "2:00PM, 27th Feb, 2024",
+    subtitle: "2:00PM, 27th Feb, 2024",
     key: 5,
   },
 ];
@@ -68,16 +67,12 @@ const notes_arr = [
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  useEffect(() => {
-    document.getElementById("modalOpener")?.addEventListener("click", onOpen);
-  }, [onOpen]);
-
   return (
     <div className="h-screen relative">
       <Image
         src="/background.png"
-        className="object-cover object-center h-full"
-        layout="fill"
+        className="object-cover object-center h-screen"
+        fill
         alt="Background"
       />
       {/* Outer Flexbox for the division into 25:75 */}
@@ -93,8 +88,8 @@ export default function Home() {
               <Date />
             </div>
 
-            <div className="absolute bottom-0 w-full p-4">
-              <button className="w-full py-2 px-4 bg-white bg-opacity-20 backdrop-blur-md hover:bg-opacity-40 text-white rounded-md">
+            <div className="absolute bottom-0 p-4 flex-1 ">
+              <button className="py-2 px-4 bg-white bg-opacity-20 backdrop-blur-md hover:bg-opacity-40 text-white rounded-md">
                 Sign Out
               </button>
             </div>
@@ -111,7 +106,7 @@ export default function Home() {
                   >
                     <h2 className={`font-semibold text-6xl`}>Tasks</h2>
 
-                    <button id="modalOpener">
+                    <button onClick={onOpen}>
                       <Image
                         priority
                         src="/plus.svg"
@@ -122,7 +117,7 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Task tasks_array={tasks_arr} />
+                  <Item items={tasks} />
                 </div>
               </div>
             </div>
@@ -146,7 +141,7 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Note notes_array={notes_arr} />
+                  <Item items={notes} />
                 </div>
               </div>
             </div>

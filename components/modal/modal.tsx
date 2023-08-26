@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/modal";
+Textarea;
 import Image from "next/image";
 import React from "react";
 
