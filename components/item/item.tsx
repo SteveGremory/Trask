@@ -39,10 +39,12 @@ const Item: NextPage<Props> = (props) => {
               <div className="mb-4 bg-white bg-opacity-[.36] backdrop-blur-md rounded-lg">
                 <div className="p-4 pl-4 flex justify-between">
                   <div className="text">
-                    <h2 className={`text-black font-semibold text-3xl`}>
+                    <h2
+                      className={`text-black font-semibold text-2xl md:text-3xl`}
+                    >
                       {item.name}
                     </h2>
-                    <h2 className={`text-[#565656] text-2xl`}>
+                    <h2 className={`text-[#565656] text-1xl lg:text-2xl`}>
                       {item.subtitle}
                     </h2>
                   </div>

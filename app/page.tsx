@@ -68,17 +68,17 @@ export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className="h-screen relative">
+    <div className="h-auto relative">
       <Image
         src="/background.png"
-        className="object-cover object-center h-screen"
+        className="object-cover object-center h-auto"
         fill
         alt="Background"
       />
       {/* Outer Flexbox for the division into 25:75 */}
       <div className="flex flex-row">
         {/* Sidebar content goes here */}
-        <div className="hidden md:block w-1/4 left-0 top-0 h-screen bg-white bg-opacity-20 backdrop-blur-md">
+        <div className="hidden lg:block w-1/4 left-0 top-0 h-screen bg-white bg-opacity-20 backdrop-blur-md">
           <div>
             <div
               className={`mt-8 m-4 text-white font-normal text-left text-5xl ${raleway.className}`}
@@ -97,21 +97,23 @@ export default function Home() {
         </div>
 
         <div className="flex-1">
-          <div className="sm:flex pl-10 pr-10">
+          <div className="sm:flex lg:pl-10 lg:pr-10">
             <div className="h-screen p-8 sm:w-1/2 text-left ">
               <div className="bg-[#969696] bg-opacity-50 backdrop-blur-md h-full rounded-lg flex flex-col overflow-auto">
                 <div className="mt-8 m-6">
                   <div
                     className={`flex justify-between text-white font-normal text-4xl ${raleway.className}`}
                   >
-                    <h2 className={`font-semibold text-6xl`}>Tasks</h2>
+                    <h2 className={`font-semibold text-5xl lg:text-6xl`}>
+                      Tasks
+                    </h2>
 
                     <button onClick={onOpen}>
                       <Image
                         priority
                         src="/plus.svg"
-                        height={56}
-                        width={56}
+                        height={48}
+                        width={48}
                         alt="Add a task"
                       />
                     </button>
@@ -128,14 +130,16 @@ export default function Home() {
                   <div
                     className={`flex justify-between text-white font-normal text-4xl ${raleway.className}`}
                   >
-                    <h2 className={`font-semibold text-6xl`}>Notes</h2>
+                    <h2 className={`font-semibold text-5xl lg:text-6xl`}>
+                      Notes
+                    </h2>
 
                     <button>
                       <Image
                         priority
                         src="/plus.svg"
-                        height={56}
-                        width={56}
+                        height={48}
+                        width={48}
                         alt="Add a task"
                       />
                     </button>

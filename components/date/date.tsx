@@ -6,7 +6,7 @@ import React, { useState } from "react";
 const GetDate = () => {
   function getdateformatted() {
     var days = [
-      "Sundaay",
+      "Sunday",
       "Monday",
       "Tuesday",
       "Wednesday",
@@ -43,7 +43,12 @@ const GetDate = () => {
   }, []);
 
   return (
-    <h1 className={`mt-2 text-2xl ${raleway.className} font-normal`}>{date}</h1>
+    <h1
+      className={`mt-2 text-2xl ${raleway.className} font-normal`}
+      suppressHydrationWarning
+    >
+      {date}
+    </h1>
   );
 };
 
