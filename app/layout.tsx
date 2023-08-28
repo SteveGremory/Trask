@@ -3,10 +3,10 @@ import type { Metadata } from "next";
 import { Providers } from "./providers";
 import { poppins } from "./fonts";
 
-// export const metadata: Metadata = {
-//   title: "Trask",
-//   description: "Manage your tasks.",
-// };
+export const metadata: Metadata = {
+  title: "Trask",
+  description: "Manage your tasks.",
+};
 
 export default function RootLayout({
   children,

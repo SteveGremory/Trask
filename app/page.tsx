@@ -1,71 +1,96 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
-import Item from "@/components/item/item";
+import Item, { ItemInterface } from "@/components/item/item";
 import Date from "@/components/date/date";
 import CustomModal from "@/components/modal/modal";
 import { useDisclosure } from "@nextui-org/modal";
 import { raleway } from "./fonts";
 
-const tasks = [
+const tasks_arr = [
   {
-    name: "Code",
+    title: "Code",
     subtitle: "10:00AM, 27th Feb, 2024",
+    notes: "",
     key: 1,
   },
   {
-    name: "Read",
+    title: "Read",
     subtitle: "11:00AM, 27th Feb, 2024",
+    notes: "",
     key: 2,
   },
   {
-    name: "Eat",
+    title: "Eat",
     subtitle: "12:00PM, 27th Feb, 2024",
+    notes: "",
     key: 3,
   },
   {
-    name: "Sleep",
+    title: "Sleep",
     subtitle: "1:00PM, 27th Feb, 2024",
+    notes: "",
     key: 4,
   },
   {
-    name: "Repeat",
+    title: "Repeat",
     subtitle: "2:00PM, 27th Feb, 2024",
+    notes: "",
     key: 5,
   },
 ];
 
-const notes = [
+const notes_arr = [
   {
-    name: "C++ Pt. 1",
+    title: "C++ Pt. 1",
     subtitle: "10:00AM, 27th Feb, 2024",
+    notes: "",
     key: 1,
   },
   {
-    name: "C++ Pt. 2",
+    title: "C++ Pt. 2",
     subtitle: "11:00AM, 27th Feb, 2024",
+    notes: "",
     key: 2,
   },
   {
-    name: "C++ Pt. 3",
+    title: "C++ Pt. 3",
     subtitle: "12:00PM, 27th Feb, 2024",
+    notes: "",
     key: 3,
   },
   {
-    name: "C++ Pt. 4",
+    title: "C++ Pt. 4",
     subtitle: "1:00PM, 27th Feb, 2024",
+    notes: "",
     key: 4,
   },
   {
-    name: "C++ Pt. 5",
+    title: "C++ Pt. 5",
     subtitle: "2:00PM, 27th Feb, 2024",
+    notes: "",
     key: 5,
   },
 ];
 
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [currentItem, setCurrentItem] = useState<ItemInterface>({
+    title: "",
+    subtitle: "",
+    notes: "",
+    key: 1,
+  });
+  const [tasks, setTasks] = useState(tasks_arr);
+  const [notes, setNotes] = useState(notes_arr);
+
+  const [itemType, setItemType] = useState("tasks");
+  React.useEffect(() => {
+    setTasks(tasks_arr);
+    setNotes(notes_arr);
+    setItemType("tasks");
+  }, []);
 
   return (
     <div className="h-auto relative">
@@ -108,7 +133,18 @@ export default function Home() {
                       Tasks
                     </h2>
 
-                    <button onClick={onOpen}>
+                    <button
+                      onClick={() => {
+                        setCurrentItem({
+                          title: "",
+                          subtitle: "",
+                          notes: "",
+                          key: 1,
+                        });
+                        onOpen();
+                        setItemType("task");
+                      }}
+                    >
                       <Image
                         priority
                         src="/plus.svg"
@@ -119,7 +155,7 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Item items={tasks} />
+                  <Item items={tasks} setItems={setTasks} />
                 </div>
               </div>
             </div>
@@ -134,18 +170,29 @@ export default function Home() {
                       Notes
                     </h2>
 
-                    <button>
+                    <button
+                      onClick={() => {
+                        setCurrentItem({
+                          title: "",
+                          subtitle: "",
+                          notes: "",
+                          key: 1,
+                        });
+                        onOpen();
+                        setItemType("note");
+                      }}
+                    >
                       <Image
                         priority
                         src="/plus.svg"
                         height={48}
                         width={48}
-                        alt="Add a task"
+                        alt="Add a note"
                       />
                     </button>
                   </div>
 
-                  <Item items={notes} />
+                  <Item items={notes} setItems={setNotes} />
                 </div>
               </div>
             </div>
@@ -153,7 +200,26 @@ export default function Home() {
         </div>
       </div>
 
-      <CustomModal isOpen={isOpen} onOpenChange={onOpenChange} />
+      <CustomModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        item={currentItem}
+        itemSetter={setCurrentItem}
+        onClose={() => {
+          if (itemType === "task")
+            setTasks((prevTasks) => {
+              currentItem.key = prevTasks.at(-1)!.key + 1;
+              prevTasks.push(currentItem);
+              return prevTasks;
+            });
+          else
+            setNotes((prevTasks) => {
+              currentItem.key = prevTasks.at(-1)!.key + 1;
+              prevTasks.push(currentItem);
+              return prevTasks;
+            });
+        }}
+      />
     </div>
   );
 }
