@@ -9,9 +9,9 @@ import {
 } from "@nextui-org/modal";
 Textarea;
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ItemInterface } from "../item/item";
-import EasyMDE from "easymde";
+import { SimpleMdeReact, SimpleMDEReactProps } from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 
 interface ModalProps {
@@ -23,14 +23,11 @@ interface ModalProps {
 }
 
 export default function CustomModal(props: ModalProps) {
-  const [easymde, setEasyMDE] = useState<EasyMDE>(
-    new EasyMDE({
-      element: document.getElementById("md-text-area")!,
-      toolbar: false,
-      previewClass: ["bg-transparent", "w-max"],
-      status: false,
-    })
-  );
+  const [value, setValue] = useState("Initial value");
+
+  const onChange = useCallback((value: string) => {
+    setValue(value);
+  }, []);
 
   return (
     <Modal
@@ -53,7 +50,7 @@ export default function CustomModal(props: ModalProps) {
               <ModalHeader></ModalHeader>
               <ModalBody>
                 <div className="">
-                  <form>
+                  <form name="Modal Form">
                     <div className="title flex flex-col">
                       <input
                         className="text-6xl font-semibold bg-transparent outline-none placeholder-current"
@@ -79,24 +76,24 @@ export default function CustomModal(props: ModalProps) {
                         }
                       />
                     </div>
-                  </form>
-                  <div className="mt-8"></div>
-                  <div className="tags flex flex-row">
-                    <button className="bg-white rounded-full text-2xl p-2 pl-4 pr-4 text-black">
-                      tags
-                    </button>
-                    <button className="ml-2">
-                      <Image
-                        priority
-                        src="/plus.svg"
-                        height={32}
-                        width={32}
-                        alt="Add something"
-                      />
-                    </button>
-                  </div>
 
-                  <div className="mt-8">
+                    <div className="mt-8"></div>
+                    <div className="tags flex flex-row">
+                      <button className="bg-white rounded-full text-2xl p-2 pl-4 pr-4 text-black">
+                        tags
+                      </button>
+                      <button className="ml-2">
+                        <Image
+                          priority
+                          src="/plus.svg"
+                          height={32}
+                          width={32}
+                          alt="Add something"
+                        />
+                      </button>
+                    </div>
+
+                    <div className="mt-8"></div>
                     <Textarea
                       label="Notes"
                       id="md-text-area"
@@ -117,18 +114,7 @@ export default function CustomModal(props: ModalProps) {
                         })
                       }
                     />
-
-                    {/*<textarea
-                      id="md-text-area"
-                      onChange={(e) => {
-                        props.itemSetter({
-                          ...props.item,
-                          notes: e.target.value,
-                        });
-                        easymde?.value(props.item.notes);
-                      }}
-                    ></textarea>*/}
-                  </div>
+                  </form>
                 </div>
               </ModalBody>
               <ModalFooter></ModalFooter>
