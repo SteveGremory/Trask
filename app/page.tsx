@@ -208,13 +208,17 @@ export default function Home() {
         onClose={() => {
           if (itemType === "task")
             setTasks((prevTasks) => {
-              currentItem.key = prevTasks.at(-1)!.key + 1;
+              currentItem.key = prevTasks.at(-1)
+                ? prevTasks.at(-1)!.key + 1
+                : 0;
               prevTasks.push(currentItem);
               return prevTasks;
             });
           else
             setNotes((prevTasks) => {
-              currentItem.key = prevTasks.at(-1)!.key + 1;
+              currentItem.key = prevTasks.at(-1)
+                ? prevTasks.at(-1)!.key + 1
+                : 0;
               prevTasks.push(currentItem);
               return prevTasks;
             });
