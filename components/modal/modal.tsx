@@ -9,8 +9,10 @@ import {
 } from "@nextui-org/modal";
 Textarea;
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ItemInterface } from "../item/item";
+import EasyMDE from "easymde";
+import "easymde/dist/easymde.min.css";
 
 interface ModalProps {
   onOpenChange: any;
@@ -21,6 +23,15 @@ interface ModalProps {
 }
 
 export default function CustomModal(props: ModalProps) {
+  const [easymde, setEasyMDE] = useState<EasyMDE>(
+    new EasyMDE({
+      element: document.getElementById("md-text-area")!,
+      toolbar: false,
+      previewClass: ["bg-transparent", "w-max"],
+      status: false,
+    })
+  );
+
   return (
     <Modal
       isOpen={props.isOpen}
@@ -69,9 +80,7 @@ export default function CustomModal(props: ModalProps) {
                       />
                     </div>
                   </form>
-
                   <div className="mt-8"></div>
-
                   <div className="tags flex flex-row">
                     <button className="bg-white rounded-full text-2xl p-2 pl-4 pr-4 text-black">
                       tags
@@ -82,24 +91,23 @@ export default function CustomModal(props: ModalProps) {
                         src="/plus.svg"
                         height={32}
                         width={32}
-                        alt="Add a task"
+                        alt="Add something"
                       />
                     </button>
                   </div>
 
-                  <div className="mt-8"></div>
-
-                  <div className="notes">
+                  <div className="mt-8">
                     <Textarea
                       label="Notes"
+                      id="md-text-area"
                       labelPlacement="inside"
                       size="lg"
                       minRows={8}
                       placeholder="Add some notes!"
                       className="max-w"
                       classNames={{
-                        label: "text-6xl font-semibold",
-                        input: "text-1xl",
+                        label: "text-3xl md:text-6xl font-semibold",
+                        input: "text-1xl md-text-area bg-transparent",
                       }}
                       value={props.item.notes}
                       onChange={(e) =>
@@ -109,6 +117,17 @@ export default function CustomModal(props: ModalProps) {
                         })
                       }
                     />
+
+                    {/*<textarea
+                      id="md-text-area"
+                      onChange={(e) => {
+                        props.itemSetter({
+                          ...props.item,
+                          notes: e.target.value,
+                        });
+                        easymde?.value(props.item.notes);
+                      }}
+                    ></textarea>*/}
                   </div>
                 </div>
               </ModalBody>

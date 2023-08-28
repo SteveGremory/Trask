@@ -206,6 +206,9 @@ export default function Home() {
         item={currentItem}
         itemSetter={setCurrentItem}
         onClose={() => {
+          if (!currentItem.title) {
+            return;
+          }
           if (itemType === "task")
             setTasks((prevTasks) => {
               currentItem.key = prevTasks.at(-1)
