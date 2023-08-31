@@ -1,16 +1,26 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { Dispatch, useMemo, useState } from "react";
 import Image from "next/image";
 import Item, { ItemInterface, refetch } from "@/components/item/item";
-import Date from "@/components/date/date";
-import CustomModal from "@/components/modal/modal";
+import Date, { getGreeting } from "@/components/date/date";
+import CustomModal from "@/components/itemModal/modal";
 import { useDisclosure } from "@nextui-org/modal";
 import { raleway } from "./fonts";
 import { v4 as uuidv4 } from "uuid";
 import { Store } from "tauri-plugin-store-api";
+import Settings, {
+  SettingsInterface,
+  fetchSettings,
+} from "@/components/settings/settings";
 
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isOpenSettingsModal,
+    onOpen: onOpenSettingsModal,
+    onOpenChange: onOpenChangeSettingsModal,
+  } = useDisclosure();
+
   const [currentItem, setCurrentItem] = useState<ItemInterface>({
     title: "",
     subtitle: "",
@@ -20,22 +30,36 @@ export default function Home() {
   const [tasks, setTasks] = useState<ItemInterface[]>([]);
   const [notes, setNotes] = useState<ItemInterface[]>([]);
 
-  const noteStore = useMemo(() => new Store(".notes.dat"), []);
-  const taskStore = useMemo(() => new Store(".tasks.dat"), []);
+  const [username, setUsername] = useState<string>("");
+  const [background, setBackground] = useState<string>("/background.png");
+  const [settingState, setSettings] = useState<SettingsInterface>({
+    background_path: "/background.png",
+    animations: true,
+    username: "",
+  });
+
+  const settingsStore: Store = useMemo(() => new Store(".settings.dat"), []);
+  const noteStore: Store = useMemo(() => new Store(".notes.dat"), []);
+  const taskStore: Store = useMemo(() => new Store(".tasks.dat"), []);
 
   const [itemType, setItemType] = useState("tasks");
 
   React.useEffect(() => {
+    fetchSettings(settingsStore, setSettings).then((settings) => {
+      setBackground(settings.background_path);
+      setUsername(settings.username);
+    });
+
     refetch(taskStore, setTasks);
     refetch(noteStore, setNotes);
 
     setItemType("tasks");
-  }, [taskStore, noteStore]);
+  }, [taskStore, noteStore, settingsStore]);
 
   return (
     <div className="h-auto relative">
       <Image
-        src="/background.png"
+        src={background}
         className="object-cover object-center h-auto"
         fill
         alt="Background"
@@ -48,16 +72,29 @@ export default function Home() {
             <div
               className={`mt-8 m-4 text-white font-normal text-left text-5xl ${raleway.className}`}
             >
-              <h2>Good Evening,</h2>
-              <h1 className={`font-semibold`}>Steve!</h1>
+              <h2>{getGreeting()},</h2>
+              <input
+                className="text-4xl font-semibold bg-transparent outline-none placeholder-current"
+                placeholder="Type a username"
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  settingsStore.set("username", e.target.value);
+                }}
+              />
               <Date />
             </div>
+          </div>
 
-            <div className="absolute bottom-0 p-4 flex-1 ">
-              <button className="py-2 px-4 bg-white bg-opacity-20 backdrop-blur-md hover:bg-opacity-40 text-white rounded-md">
-                Sign Out
-              </button>
-            </div>
+          <div className="absolute bottom-0 p-4 flex-1 ">
+            <button
+              onClick={() => {
+                onOpenSettingsModal();
+              }}
+              className="py-2 px-4 bg-white bg-opacity-20 backdrop-blur-md hover:bg-opacity-40 text-white rounded-md"
+            >
+              Settings
+            </button>
           </div>
         </div>
 
@@ -139,6 +176,18 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <Settings
+        store={settingsStore}
+        isOpen={isOpenSettingsModal}
+        onOpenChange={onOpenChangeSettingsModal}
+        setUsername={setUsername}
+        setBackground={setBackground}
+        setter={setSettings}
+        onClose={() => {
+          settingsStore.save();
+        }}
+      />
 
       <CustomModal
         isOpen={isOpen}

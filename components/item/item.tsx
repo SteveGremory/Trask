@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, Dispatch, SetStateAction } from "react";
 import { poppins } from "@/app/fonts";
 import { useDisclosure } from "@nextui-org/modal";
-import CustomModal from "@/components/modal/modal";
+import CustomModal from "@/components/itemModal/modal";
 import { Store } from "tauri-plugin-store-api";
 
 export interface ItemInterface {
@@ -89,11 +89,7 @@ const Item: NextPage<Props> = (props) => {
                         width={48}
                         alt="Remove a task"
                         onClick={async () => {
-                          console.log(
-                            "DELETE: ",
-                            item.key,
-                            await store.delete(item.key)
-                          );
+                          await store.delete(item.key);
                           await refetch(store, props.setItems);
                         }}
                       />

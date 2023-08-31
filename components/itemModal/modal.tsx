@@ -77,6 +77,7 @@ export default function CustomModal(props: ModalProps) {
                       />
                     </div>
 
+                    {/*
                     <div className="mt-8"></div>
                     <div className="tags flex flex-row">
                       <button className="bg-white rounded-full text-2xl p-2 pl-4 pr-4 text-black">
@@ -92,6 +93,7 @@ export default function CustomModal(props: ModalProps) {
                         />
                       </button>
                     </div>
+                      */}
 
                     <div className="mt-8"></div>
                     <Textarea
