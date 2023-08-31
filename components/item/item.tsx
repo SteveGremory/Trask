@@ -2,31 +2,43 @@
 import { NextPage } from "next";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { poppins } from "@/app/fonts";
 import { useDisclosure } from "@nextui-org/modal";
 import CustomModal from "@/components/modal/modal";
+import { Store } from "tauri-plugin-store-api";
 
 export interface ItemInterface {
   title: string;
   subtitle: string;
   notes: string;
-  key: number;
+  key: string;
 }
 
 interface Props {
-  items: any;
-  setItems: any;
+  items: ItemInterface[];
+  setItems: Dispatch<SetStateAction<ItemInterface[]>>;
+  store: Store;
 }
+
+export const refetch = async (
+  store: Store,
+  setAllItems: Dispatch<SetStateAction<ItemInterface[]>>
+) => {
+  await store.entries().then((y) => {
+    setAllItems(y.map((pair) => pair[1] as ItemInterface));
+  });
+  await store.save();
+};
 
 const Item: NextPage<Props> = (props) => {
   let items = props.items;
-  let setItems = props.setItems;
-  const [currentItem, setCurrentItem] = useState({
+  let store = props.store;
+  const [currentItem, setCurrentItem] = useState<ItemInterface>({
     title: "",
     subtitle: "",
     notes: "",
-    key: 1,
+    key: "",
   });
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -76,11 +88,14 @@ const Item: NextPage<Props> = (props) => {
                         height={48}
                         width={48}
                         alt="Remove a task"
-                        onClick={() =>
-                          setItems((prevItems: any) =>
-                            prevItems.filter((_: any, i: any) => i !== index)
-                          )
-                        }
+                        onClick={async () => {
+                          console.log(
+                            "DELETE: ",
+                            item.key,
+                            await store.delete(item.key)
+                          );
+                          await refetch(store, props.setItems);
+                        }}
                       />
                     </motion.button>
                   </div>
@@ -98,15 +113,9 @@ const Item: NextPage<Props> = (props) => {
         onOpenChange={onOpenChange}
         item={currentItem}
         itemSetter={setCurrentItem}
-        onClose={() => {
-          setItems((prevItems: any) => {
-            return prevItems.map((item: any, _: any) => {
-              if (item.key === currentItem.key) {
-                return currentItem; // Update subtitle for the specific index
-              }
-              return item; // Keep other items unchanged
-            });
-          });
+        onClose={async () => {
+          await store.set(currentItem.key, currentItem);
+          await refetch(store, props.setItems);
         }}
       />
     </>

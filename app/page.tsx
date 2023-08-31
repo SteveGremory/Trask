@@ -1,78 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
-
-import Item, { ItemInterface } from "@/components/item/item";
+import Item, { ItemInterface, refetch } from "@/components/item/item";
 import Date from "@/components/date/date";
 import CustomModal from "@/components/modal/modal";
 import { useDisclosure } from "@nextui-org/modal";
 import { raleway } from "./fonts";
-
-const tasks_arr = [
-  {
-    title: "Code",
-    subtitle: "10:00AM, 27th Feb, 2024",
-    notes: "",
-    key: 1,
-  },
-  {
-    title: "Read",
-    subtitle: "11:00AM, 27th Feb, 2024",
-    notes: "",
-    key: 2,
-  },
-  {
-    title: "Eat",
-    subtitle: "12:00PM, 27th Feb, 2024",
-    notes: "",
-    key: 3,
-  },
-  {
-    title: "Sleep",
-    subtitle: "1:00PM, 27th Feb, 2024",
-    notes: "",
-    key: 4,
-  },
-  {
-    title: "Repeat",
-    subtitle: "2:00PM, 27th Feb, 2024",
-    notes: "",
-    key: 5,
-  },
-];
-
-const notes_arr = [
-  {
-    title: "C++ Pt. 1",
-    subtitle: "10:00AM, 27th Feb, 2024",
-    notes: "",
-    key: 1,
-  },
-  {
-    title: "C++ Pt. 2",
-    subtitle: "11:00AM, 27th Feb, 2024",
-    notes: "",
-    key: 2,
-  },
-  {
-    title: "C++ Pt. 3",
-    subtitle: "12:00PM, 27th Feb, 2024",
-    notes: "",
-    key: 3,
-  },
-  {
-    title: "C++ Pt. 4",
-    subtitle: "1:00PM, 27th Feb, 2024",
-    notes: "",
-    key: 4,
-  },
-  {
-    title: "C++ Pt. 5",
-    subtitle: "2:00PM, 27th Feb, 2024",
-    notes: "",
-    key: 5,
-  },
-];
+import { v4 as uuidv4 } from "uuid";
+import { Store } from "tauri-plugin-store-api";
 
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -80,17 +15,22 @@ export default function Home() {
     title: "",
     subtitle: "",
     notes: "",
-    key: 1,
+    key: "",
   });
-  const [tasks, setTasks] = useState(tasks_arr);
-  const [notes, setNotes] = useState(notes_arr);
+  const [tasks, setTasks] = useState<ItemInterface[]>([]);
+  const [notes, setNotes] = useState<ItemInterface[]>([]);
+
+  const noteStore = useMemo(() => new Store(".notes.dat"), []);
+  const taskStore = useMemo(() => new Store(".tasks.dat"), []);
 
   const [itemType, setItemType] = useState("tasks");
+
   React.useEffect(() => {
-    setTasks(tasks_arr);
-    setNotes(notes_arr);
+    refetch(taskStore, setTasks);
+    refetch(noteStore, setNotes);
+
     setItemType("tasks");
-  }, []);
+  }, [taskStore, noteStore]);
 
   return (
     <div className="h-auto relative">
@@ -139,7 +79,7 @@ export default function Home() {
                           title: "",
                           subtitle: "",
                           notes: "",
-                          key: 1,
+                          key: "",
                         });
                         onOpen();
                         setItemType("task");
@@ -155,7 +95,7 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Item items={tasks} setItems={setTasks} />
+                  <Item items={tasks} store={taskStore} setItems={setTasks} />
                 </div>
               </div>
             </div>
@@ -176,7 +116,7 @@ export default function Home() {
                           title: "",
                           subtitle: "",
                           notes: "",
-                          key: 1,
+                          key: "",
                         });
                         onOpen();
                         setItemType("note");
@@ -192,7 +132,7 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Item items={notes} setItems={setNotes} />
+                  <Item items={notes} store={noteStore} setItems={setNotes} />
                 </div>
               </div>
             </div>
@@ -205,26 +145,22 @@ export default function Home() {
         onOpenChange={onOpenChange}
         item={currentItem}
         itemSetter={setCurrentItem}
-        onClose={() => {
+        onClose={async () => {
           if (!currentItem.title) {
             return;
           }
-          if (itemType === "task")
-            setTasks((prevTasks) => {
-              currentItem.key = prevTasks.at(-1)
-                ? prevTasks.at(-1)!.key + 1
-                : 0;
-              prevTasks.push(currentItem);
-              return prevTasks;
-            });
-          else
-            setNotes((prevTasks) => {
-              currentItem.key = prevTasks.at(-1)
-                ? prevTasks.at(-1)!.key + 1
-                : 0;
-              prevTasks.push(currentItem);
-              return prevTasks;
-            });
+
+          if (itemType === "task") {
+            currentItem.key = uuidv4();
+            await taskStore.set(currentItem.key, currentItem);
+
+            await refetch(taskStore, setTasks);
+          } else {
+            currentItem.key = uuidv4();
+            await noteStore.set(currentItem.key, currentItem);
+
+            await refetch(noteStore, setNotes);
+          }
         }}
       />
     </div>
