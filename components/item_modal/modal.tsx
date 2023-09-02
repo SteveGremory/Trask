@@ -93,9 +93,9 @@ export default function ItemModal(props: ModalProps) {
                     </div>
                   </div>
 
-                  <div className="mt-6 hidden flex-row justify-between md:flex">
+                  <div className="mt-6 hidden flex-row justify-between md:flex ">
                     <div className="flex flex-row">
-                      <ul className="overflow-inline mt-2 max-w-2xl overflow-x-scroll whitespace-nowrap">
+                      <ul className="overflow-inline no-scrollbar mt-2 max-w-2xl overflow-x-scroll whitespace-nowrap">
                         {tags.map((tag, index) => {
                           return (
                             <li

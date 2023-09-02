@@ -31,7 +31,7 @@ const Item: NextPage<Props> = (props) => {
   return (
     <>
       <motion.ul
-        className={`${poppins.className} mt-8 flex flex-col`}
+        className={`${poppins.className} no-scrollbar mt-8 flex flex-col`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
