@@ -1,24 +1,28 @@
 "use client";
-import React, { Dispatch, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
-import Item, { ItemInterface, refetch } from "@/components/item/item";
+import Item from "@/components/item/item";
 import Date, { getGreeting } from "@/components/date/date";
-import CustomModal from "@/components/itemModal/modal";
+import ItemModal from "@/components/item_modal/modal";
 import { useDisclosure } from "@nextui-org/modal";
 import { raleway } from "./fonts";
 import { v4 as uuidv4 } from "uuid";
 import { Store } from "tauri-plugin-store-api";
-import Settings, {
-  SettingsInterface,
-  fetchSettings,
-} from "@/components/settings/settings";
+import Settings from "@/components/settings/settings";
+import { ItemInterface } from "@/interfaces/interfaces";
+import { fetchItems, fetchSettings } from "@/helpers/fetchers";
 
 export default function Home() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
-    isOpen: isOpenSettingsModal,
-    onOpen: onOpenSettingsModal,
-    onOpenChange: onOpenChangeSettingsModal,
+    isOpen: isItemModalOpen,
+    onOpen: onItemModalOpen,
+    onOpenChange: onItemModalOpenChange,
+  } = useDisclosure();
+
+  const {
+    isOpen: isSettingsModalOpen,
+    onOpen: onSettingsModalOpen,
+    onOpenChange: onSettingsModalOpenChange,
   } = useDisclosure();
 
   const [currentItem, setCurrentItem] = useState<ItemInterface>({
@@ -27,16 +31,12 @@ export default function Home() {
     notes: "",
     key: "",
   });
+
   const [tasks, setTasks] = useState<ItemInterface[]>([]);
   const [notes, setNotes] = useState<ItemInterface[]>([]);
 
   const [username, setUsername] = useState<string>("");
   const [background, setBackground] = useState<string>("/background.png");
-  const [settingState, setSettings] = useState<SettingsInterface>({
-    background_path: "/background.png",
-    animations: true,
-    username: "",
-  });
 
   const settingsStore: Store = useMemo(() => new Store(".settings.dat"), []);
   const noteStore: Store = useMemo(() => new Store(".notes.dat"), []);
@@ -45,36 +45,40 @@ export default function Home() {
   const [itemType, setItemType] = useState("tasks");
 
   React.useEffect(() => {
-    fetchSettings(settingsStore, setSettings).then((settings) => {
-      setBackground(settings.background_path);
-      setUsername(settings.username);
+    fetchSettings(settingsStore).then((settings) => {
+      if (background !== settings.background_path) {
+        setBackground(settings.background_path);
+      }
+      if (username !== settings.username) {
+        setUsername(settings.username);
+      }
     });
 
-    refetch(taskStore, setTasks);
-    refetch(noteStore, setNotes);
+    fetchItems(taskStore).then((tasks) => setTasks(tasks));
+    fetchItems(noteStore).then((notes) => setNotes(notes));
 
     setItemType("tasks");
-  }, [taskStore, noteStore, settingsStore]);
+  }, [taskStore, noteStore, settingsStore, background, username]);
 
   return (
-    <div className="h-auto relative">
+    <div className="relative h-auto">
       <Image
         src={background}
-        className="object-cover object-center h-auto"
+        className="h-auto object-cover object-center"
         fill
         alt="Background"
       />
       {/* Outer Flexbox for the division into 25:75 */}
       <div className="flex flex-row">
         {/* Sidebar content goes here */}
-        <div className="hidden lg:block w-1/4 left-0 top-0 h-screen bg-white bg-opacity-20 backdrop-blur-md">
+        <div className="left-0 top-0 hidden h-screen w-1/4 bg-white bg-opacity-20 backdrop-blur-md lg:block">
           <div>
             <div
-              className={`mt-8 m-4 text-white font-normal text-left text-5xl ${raleway.className}`}
+              className={`m-4 mt-8 text-left text-5xl font-normal text-white ${raleway.className}`}
             >
               <h2>{getGreeting()},</h2>
               <input
-                className="text-4xl font-semibold bg-transparent outline-none placeholder-current"
+                className="bg-transparent text-4xl font-semibold placeholder-current outline-none"
                 placeholder="Type a username"
                 value={username}
                 onChange={(e) => {
@@ -86,12 +90,12 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="absolute bottom-0 p-4 flex-1 ">
+          <div className="absolute bottom-0 flex-1 p-4 ">
             <button
               onClick={() => {
-                onOpenSettingsModal();
+                onSettingsModalOpen();
               }}
-              className="py-2 px-4 bg-white bg-opacity-20 backdrop-blur-md hover:bg-opacity-40 text-white rounded-md"
+              className="rounded-md bg-white bg-opacity-20 px-4 py-2 text-white backdrop-blur-md hover:bg-opacity-40"
             >
               Settings
             </button>
@@ -100,13 +104,13 @@ export default function Home() {
 
         <div className="flex-1">
           <div className="sm:flex lg:pl-10 lg:pr-10">
-            <div className="h-screen p-8 sm:w-1/2 text-left ">
-              <div className="bg-[#969696] bg-opacity-50 backdrop-blur-md h-full rounded-lg flex flex-col overflow-auto">
-                <div className="mt-8 m-6">
+            <div className="h-screen p-8 text-left sm:w-1/2 ">
+              <div className="flex h-full flex-col overflow-auto rounded-lg bg-[#969696] bg-opacity-50 backdrop-blur-md">
+                <div className="m-6 mt-8">
                   <div
-                    className={`flex justify-between text-white font-normal text-4xl ${raleway.className}`}
+                    className={`flex justify-between text-4xl font-normal text-white ${raleway.className}`}
                   >
-                    <h2 className={`font-semibold text-5xl lg:text-6xl`}>
+                    <h2 className={`text-5xl font-semibold lg:text-6xl`}>
                       Tasks
                     </h2>
 
@@ -118,7 +122,7 @@ export default function Home() {
                           notes: "",
                           key: "",
                         });
-                        onOpen();
+                        onItemModalOpen();
                         setItemType("task");
                       }}
                     >
@@ -137,13 +141,13 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="h-screen p-8 sm:w-1/2 text-left ">
-              <div className="bg-[#969696] bg-opacity-50 backdrop-blur-md h-full rounded-lg flex flex-col overflow-auto">
-                <div className="mt-8 m-6">
+            <div className="h-screen p-8 text-left sm:w-1/2 ">
+              <div className="flex h-full flex-col overflow-auto rounded-lg bg-[#969696] bg-opacity-50 backdrop-blur-md">
+                <div className="m-6 mt-8">
                   <div
-                    className={`flex justify-between text-white font-normal text-4xl ${raleway.className}`}
+                    className={`flex justify-between text-4xl font-normal text-white ${raleway.className}`}
                   >
-                    <h2 className={`font-semibold text-5xl lg:text-6xl`}>
+                    <h2 className={`text-5xl font-semibold lg:text-6xl `}>
                       Notes
                     </h2>
 
@@ -155,7 +159,7 @@ export default function Home() {
                           notes: "",
                           key: "",
                         });
-                        onOpen();
+                        onItemModalOpen();
                         setItemType("note");
                       }}
                     >
@@ -179,19 +183,18 @@ export default function Home() {
 
       <Settings
         store={settingsStore}
-        isOpen={isOpenSettingsModal}
-        onOpenChange={onOpenChangeSettingsModal}
+        isOpen={isSettingsModalOpen}
+        onOpenChange={onSettingsModalOpenChange}
         setUsername={setUsername}
         setBackground={setBackground}
-        setter={setSettings}
         onClose={() => {
           settingsStore.save();
         }}
       />
 
-      <CustomModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
+      <ItemModal
+        isOpen={isItemModalOpen}
+        onOpenChange={onItemModalOpenChange}
         item={currentItem}
         itemSetter={setCurrentItem}
         onClose={async () => {
@@ -201,14 +204,14 @@ export default function Home() {
 
           if (itemType === "task") {
             currentItem.key = uuidv4();
-            await taskStore.set(currentItem.key, currentItem);
 
-            await refetch(taskStore, setTasks);
+            await taskStore.set(currentItem.key, currentItem);
+            fetchItems(taskStore).then((tasks) => setTasks(tasks));
           } else {
             currentItem.key = uuidv4();
-            await noteStore.set(currentItem.key, currentItem);
 
-            await refetch(noteStore, setNotes);
+            await noteStore.set(currentItem.key, currentItem);
+            fetchItems(noteStore).then((notes) => setNotes(notes));
           }
         }}
       />

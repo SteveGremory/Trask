@@ -7,10 +7,9 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/modal";
-Textarea;
 import Image from "next/image";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ItemInterface } from "../item/item";
+import { ItemInterface } from "@/interfaces/interfaces";
+
 import { Button } from "@nextui-org/button";
 
 interface ModalProps {
@@ -22,12 +21,6 @@ interface ModalProps {
 }
 
 export default function CustomModal(props: ModalProps) {
-  const [value, setValue] = useState("Initial value");
-
-  const onChange = useCallback((value: string) => {
-    setValue(value);
-  }, []);
-
   return (
     <Modal
       isOpen={props.isOpen}
@@ -52,7 +45,7 @@ export default function CustomModal(props: ModalProps) {
                   <form name="Modal Form">
                     <div className="title flex flex-col">
                       <input
-                        className="text-6xl font-semibold bg-transparent outline-none placeholder-current"
+                        className="bg-transparent text-6xl font-semibold placeholder-current outline-none"
                         placeholder="Title"
                         value={props.item.title}
                         onChange={(e) =>
@@ -64,7 +57,7 @@ export default function CustomModal(props: ModalProps) {
                       />
 
                       <input
-                        className="text-2xl font-regular bg-transparent outline-none placeholder-current"
+                        className="font-regular bg-transparent text-2xl placeholder-current outline-none"
                         placeholder="Subtitle"
                         value={props.item.subtitle}
                         onChange={(e) =>
@@ -78,7 +71,7 @@ export default function CustomModal(props: ModalProps) {
 
                     <div className="mt-8 flex flex-row justify-between">
                       <div className="tags flex flex-row">
-                        <button className="bg-white rounded-full text-2xl p-2 pl-4 pr-4 text-black">
+                        <button className="rounded-full bg-white p-2 pl-4 pr-4 text-2xl text-black">
                           tags
                         </button>
                         <button className="ml-2">
@@ -93,7 +86,7 @@ export default function CustomModal(props: ModalProps) {
                       </div>
 
                       <Button
-                        className="py-2 px-4 bg-white bg-opacity-20 backdrop-blur-md hover:bg-opacity-40 text-white rounded-md text-2xl"
+                        className="rounded-md bg-white bg-opacity-20 px-4 py-2 text-2xl text-white backdrop-blur-md hover:bg-opacity-40"
                         onPress={onModalClose}
                       >
                         Submit

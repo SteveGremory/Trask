@@ -5,31 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, Dispatch, SetStateAction } from "react";
 import { poppins } from "@/app/fonts";
 import { useDisclosure } from "@nextui-org/modal";
-import CustomModal from "@/components/itemModal/modal";
+import CustomModal from "@/components/item_modal/modal";
 import { Store } from "tauri-plugin-store-api";
-
-export interface ItemInterface {
-  title: string;
-  subtitle: string;
-  notes: string;
-  key: string;
-}
+import { ItemInterface } from "@/interfaces/interfaces";
+import { fetchItems } from "@/helpers/fetchers";
 
 interface Props {
   items: ItemInterface[];
   setItems: Dispatch<SetStateAction<ItemInterface[]>>;
   store: Store;
 }
-
-export const refetch = async (
-  store: Store,
-  setAllItems: Dispatch<SetStateAction<ItemInterface[]>>
-) => {
-  await store.entries().then((y) => {
-    setAllItems(y.map((pair) => pair[1] as ItemInterface));
-  });
-  await store.save();
-};
 
 const Item: NextPage<Props> = (props) => {
   let items = props.items;
@@ -45,7 +30,7 @@ const Item: NextPage<Props> = (props) => {
   return (
     <>
       <motion.ul
-        className={`${poppins.className} flex flex-col mt-8`}
+        className={`${poppins.className} mt-8 flex flex-col`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -61,8 +46,8 @@ const Item: NextPage<Props> = (props) => {
                 key={item.key}
               >
                 {/* Item starts */}
-                <div className="mb-4 bg-white bg-opacity-[.36] backdrop-blur-md rounded-lg">
-                  <div className="p-4 pl-4 flex justify-between">
+                <div className="mb-4 rounded-lg bg-white bg-opacity-[.36] backdrop-blur-md">
+                  <div className="flex justify-between p-4 pl-4">
                     <button
                       onClick={() => {
                         setCurrentItem(item);
@@ -72,11 +57,11 @@ const Item: NextPage<Props> = (props) => {
                     >
                       <div className="text">
                         <h2
-                          className={`text-black font-semibold text-2xl md:text-3xl`}
+                          className={`text-2xl font-semibold text-black md:text-3xl`}
                         >
                           {item.title}
                         </h2>
-                        <h2 className={`text-[#565656] text-1xl lg:text-2xl`}>
+                        <h2 className={`text-1xl text-[#565656] lg:text-2xl`}>
                           {item.subtitle}
                         </h2>
                       </div>
@@ -90,7 +75,9 @@ const Item: NextPage<Props> = (props) => {
                         alt="Remove a task"
                         onClick={async () => {
                           await store.delete(item.key);
-                          await refetch(store, props.setItems);
+                          fetchItems(store).then((items) =>
+                            props.setItems(items),
+                          );
                         }}
                       />
                     </motion.button>
@@ -111,7 +98,7 @@ const Item: NextPage<Props> = (props) => {
         itemSetter={setCurrentItem}
         onClose={async () => {
           await store.set(currentItem.key, currentItem);
-          await refetch(store, props.setItems);
+          fetchItems(store).then((items) => props.setItems(items));
         }}
       />
     </>
