@@ -125,7 +125,7 @@ export default function ItemModal(props: ModalProps) {
                       </ul>
 
                       <Button
-                        className="ml-2 mt-2 bg-transparent"
+                        className="mt-2 bg-transparent"
                         isIconOnly
                         onPress={() => {
                           // add to tags
