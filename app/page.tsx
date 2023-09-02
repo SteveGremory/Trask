@@ -1,14 +1,16 @@
 "use client";
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
+import { useDisclosure } from "@nextui-org/modal";
+import { v4 as uuidv4 } from "uuid";
+import { Store } from "tauri-plugin-store-api";
+
 import Item from "@/components/item/item";
 import Date, { getGreeting } from "@/components/date/date";
 import ItemModal from "@/components/item_modal/modal";
-import { useDisclosure } from "@nextui-org/modal";
-import { raleway } from "./fonts";
-import { v4 as uuidv4 } from "uuid";
-import { Store } from "tauri-plugin-store-api";
 import Settings from "@/components/settings/settings";
+
+import { raleway } from "./fonts";
 import { ItemInterface } from "@/interfaces/interfaces";
 import { fetchItems, fetchSettings } from "@/helpers/fetchers";
 
@@ -25,6 +27,10 @@ export default function Home() {
     onOpenChange: onSettingsModalOpenChange,
   } = useDisclosure();
 
+  const settingsStore: Store = useMemo(() => new Store(".settings.dat"), []);
+  const noteStore: Store = useMemo(() => new Store(".notes.dat"), []);
+  const taskStore: Store = useMemo(() => new Store(".tasks.dat"), []);
+
   const [currentItem, setCurrentItem] = useState<ItemInterface>({
     title: "",
     subtitle: "",
@@ -36,11 +42,7 @@ export default function Home() {
   const [notes, setNotes] = useState<ItemInterface[]>([]);
 
   const [username, setUsername] = useState<string>("");
-  const [background, setBackground] = useState<string>("/background.png");
-
-  const settingsStore: Store = useMemo(() => new Store(".settings.dat"), []);
-  const noteStore: Store = useMemo(() => new Store(".notes.dat"), []);
-  const taskStore: Store = useMemo(() => new Store(".tasks.dat"), []);
+  const [background, setBackground] = useState<string>("");
 
   const [itemType, setItemType] = useState("tasks");
 
@@ -59,6 +61,17 @@ export default function Home() {
 
     setItemType("tasks");
   }, [taskStore, noteStore, settingsStore, background, username]);
+
+  const handleItemClick = (type: string) => {
+    setCurrentItem({
+      title: "",
+      subtitle: "",
+      notes: "",
+      key: "",
+    });
+    setItemType(type);
+    onItemModalOpen();
+  };
 
   return (
     <div className="relative h-auto">
@@ -81,9 +94,9 @@ export default function Home() {
                 className="bg-transparent text-4xl font-semibold placeholder-current outline-none"
                 placeholder="Type a username"
                 value={username}
-                onChange={(e) => {
+                onChange={async (e) => {
                   setUsername(e.target.value);
-                  settingsStore.set("username", e.target.value);
+                  await settingsStore.set("username", e.target.value);
                 }}
               />
               <Date />
@@ -92,9 +105,7 @@ export default function Home() {
 
           <div className="absolute bottom-0 flex-1 p-4 ">
             <button
-              onClick={() => {
-                onSettingsModalOpen();
-              }}
+              onClick={() => onSettingsModalOpen()}
               className="rounded-md bg-white bg-opacity-20 px-4 py-2 text-white backdrop-blur-md hover:bg-opacity-40"
             >
               Settings
@@ -114,18 +125,7 @@ export default function Home() {
                       Tasks
                     </h2>
 
-                    <button
-                      onClick={() => {
-                        setCurrentItem({
-                          title: "",
-                          subtitle: "",
-                          notes: "",
-                          key: "",
-                        });
-                        onItemModalOpen();
-                        setItemType("task");
-                      }}
-                    >
+                    <button onClick={() => handleItemClick("task")}>
                       <Image
                         priority
                         src="/plus.svg"
@@ -151,18 +151,7 @@ export default function Home() {
                       Notes
                     </h2>
 
-                    <button
-                      onClick={() => {
-                        setCurrentItem({
-                          title: "",
-                          subtitle: "",
-                          notes: "",
-                          key: "",
-                        });
-                        onItemModalOpen();
-                        setItemType("note");
-                      }}
-                    >
+                    <button onClick={() => handleItemClick("note")}>
                       <Image
                         priority
                         src="/plus.svg"
@@ -187,8 +176,8 @@ export default function Home() {
         onOpenChange={onSettingsModalOpenChange}
         setUsername={setUsername}
         setBackground={setBackground}
-        onClose={() => {
-          settingsStore.save();
+        onClose={async () => {
+          await settingsStore.save();
         }}
       />
 
@@ -202,16 +191,14 @@ export default function Home() {
             return;
           }
 
+          currentItem.key = uuidv4();
           if (itemType === "task") {
-            currentItem.key = uuidv4();
-
+            // Don't use .then() in a async function
             await taskStore.set(currentItem.key, currentItem);
-            fetchItems(taskStore).then((tasks) => setTasks(tasks));
+            setTasks(await fetchItems(taskStore));
           } else {
-            currentItem.key = uuidv4();
-
             await noteStore.set(currentItem.key, currentItem);
-            fetchItems(noteStore).then((notes) => setNotes(notes));
+            setNotes(await fetchItems(noteStore));
           }
         }}
       />

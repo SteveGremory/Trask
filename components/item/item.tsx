@@ -1,14 +1,13 @@
-"use client";
+import { useState, Dispatch, SetStateAction } from "react";
 import { NextPage } from "next";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, Dispatch, SetStateAction } from "react";
-import { poppins } from "@/app/fonts";
 import { useDisclosure } from "@nextui-org/modal";
-import CustomModal from "@/components/item_modal/modal";
 import { Store } from "tauri-plugin-store-api";
 import { ItemInterface } from "@/interfaces/interfaces";
 import { fetchItems } from "@/helpers/fetchers";
+import { poppins } from "@/app/fonts";
+import ItemModal from "@/components/item_modal/modal";
 
 interface Props {
   items: ItemInterface[];
@@ -75,9 +74,7 @@ const Item: NextPage<Props> = (props) => {
                         alt="Remove a task"
                         onClick={async () => {
                           await store.delete(item.key);
-                          fetchItems(store).then((items) =>
-                            props.setItems(items),
-                          );
+                          props.setItems(await fetchItems(store));
                         }}
                       />
                     </motion.button>
@@ -91,14 +88,14 @@ const Item: NextPage<Props> = (props) => {
         </AnimatePresence>
       </motion.ul>
 
-      <CustomModal
+      <ItemModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         item={currentItem}
         itemSetter={setCurrentItem}
         onClose={async () => {
           await store.set(currentItem.key, currentItem);
-          fetchItems(store).then((items) => props.setItems(items));
+          props.setItems(await fetchItems(store));
         }}
       />
     </>

@@ -1,5 +1,3 @@
-"use client";
-
 import { Textarea } from "@nextui-org/input";
 import {
   Modal,
@@ -73,7 +71,7 @@ export default function Settings(props: ModalProps) {
                     />
                     <button
                       className="rounded-md bg-white bg-opacity-20 px-4 py-2 backdrop-blur-md hover:bg-opacity-40"
-                      onClick={(e) => {
+                      onClick={() => {
                         inputFile.current?.click();
                       }}
                     >

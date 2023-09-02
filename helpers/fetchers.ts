@@ -1,5 +1,4 @@
 import { ItemInterface, SettingsInterface } from "@/interfaces/interfaces";
-import { Dispatch, SetStateAction } from "react";
 import { Store } from "tauri-plugin-store-api";
 
 export const fetchSettings = async (settingsStore: Store) => {
@@ -26,11 +25,9 @@ export const fetchSettings = async (settingsStore: Store) => {
 
 export const fetchItems = async (store: Store) => {
   let items: ItemInterface[] = [];
-  store.entries().then((y) => {
-    items = y.map((pair) => pair[1] as ItemInterface);
-  });
 
-  await store.save().then();
+  const entries = await store.entries();
+  items = entries.map((pair) => pair[1] as ItemInterface);
 
   return items;
 };

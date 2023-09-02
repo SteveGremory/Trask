@@ -1,19 +1,15 @@
 # Trask
 
-This is a nice looking ToDo and Notes storage manager that can be locally hosted.
+This is a nice looking Task and Notes storage manager, built using NextJS, TailwindCSS and Tauri.
 
 ![Task page](./readme/task_page.png)
 
 ## Getting Started
 
-First, run the development server:
+to compile the app, run the following commands in the root of the project:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+`pnpm install` - To install all the dependencies
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`pnpm tauri dev` - To start the dev version
+
+`pnpm tauri build` - To build a release package/binary

@@ -1,4 +1,3 @@
-"use client";
 import { Textarea } from "@nextui-org/input";
 import {
   Modal,
@@ -8,9 +7,9 @@ import {
   ModalFooter,
 } from "@nextui-org/modal";
 import Image from "next/image";
-import { ItemInterface } from "@/interfaces/interfaces";
-
 import { Button } from "@nextui-org/button";
+
+import { ItemInterface } from "@/interfaces/interfaces";
 
 interface ModalProps {
   onOpenChange: any;
@@ -71,7 +70,7 @@ export default function CustomModal(props: ModalProps) {
 
                     <div className="mt-8 flex flex-row justify-between">
                       <div className="tags flex flex-row">
-                        <button className="rounded-full bg-white p-2 pl-4 pr-4 text-2xl text-black">
+                        <button className="rounded-full bg-white p-2 pl-4 pr-4 text-2xl text-black text-opacity-50">
                           tags
                         </button>
                         <button className="ml-2">
@@ -86,7 +85,7 @@ export default function CustomModal(props: ModalProps) {
                       </div>
 
                       <Button
-                        className="rounded-md bg-white bg-opacity-20 px-4 py-2 text-2xl text-white backdrop-blur-md hover:bg-opacity-40"
+                        className="rounded-md bg-white bg-opacity-20 px-4 py-2 text-2xl text-black text-opacity-50 backdrop-blur-md hover:bg-opacity-40"
                         onPress={onModalClose}
                       >
                         Submit
