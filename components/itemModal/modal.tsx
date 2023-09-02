@@ -11,8 +11,7 @@ Textarea;
 import Image from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ItemInterface } from "../item/item";
-import { SimpleMdeReact, SimpleMDEReactProps } from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
+import { Button } from "@nextui-org/button";
 
 interface ModalProps {
   onOpenChange: any;
@@ -44,7 +43,7 @@ export default function CustomModal(props: ModalProps) {
       onClose={props.onClose}
     >
       <ModalContent>
-        {(onClose) => {
+        {(onModalClose) => {
           return (
             <>
               <ModalHeader></ModalHeader>
@@ -77,23 +76,29 @@ export default function CustomModal(props: ModalProps) {
                       />
                     </div>
 
-                    {/*
-                    <div className="mt-8"></div>
-                    <div className="tags flex flex-row">
-                      <button className="bg-white rounded-full text-2xl p-2 pl-4 pr-4 text-black">
-                        tags
-                      </button>
-                      <button className="ml-2">
-                        <Image
-                          priority
-                          src="/plus.svg"
-                          height={32}
-                          width={32}
-                          alt="Add something"
-                        />
-                      </button>
+                    <div className="mt-8 flex flex-row justify-between">
+                      <div className="tags flex flex-row">
+                        <button className="bg-white rounded-full text-2xl p-2 pl-4 pr-4 text-black">
+                          tags
+                        </button>
+                        <button className="ml-2">
+                          <Image
+                            priority
+                            src="/plus.svg"
+                            height={32}
+                            width={32}
+                            alt="Add something"
+                          />
+                        </button>
+                      </div>
+
+                      <Button
+                        className="py-2 px-4 bg-white bg-opacity-20 backdrop-blur-md hover:bg-opacity-40 text-white rounded-md text-2xl"
+                        onPress={onModalClose}
+                      >
+                        Submit
+                      </Button>
                     </div>
-                      */}
 
                     <div className="mt-8"></div>
                     <Textarea
