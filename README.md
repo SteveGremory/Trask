@@ -2,7 +2,8 @@
 
 This is a nice looking Task and Notes storage manager, built using NextJS, TailwindCSS and Tauri.
 
-![Task page](./readme/task_page.png)
+![Main page](./readme/mainpage.png)
+![Item Modal](./readme/modal.png)
 
 ## Getting Started
 
