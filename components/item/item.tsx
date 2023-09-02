@@ -58,9 +58,11 @@ const Item: NextPage<Props> = (props) => {
                     >
                       <div className="text">
                         <h2
-                          className={`text-2xl font-semibold text-black md:text-3xl`}
+                          className={`text-2xl ${
+                            item.title ? "text-opacity-100" : "text-opacity-50"
+                          } font-semibold text-black md:text-3xl`}
                         >
-                          {item.title}
+                          {item.title ? item.title : "No title"}
                         </h2>
                         <h2 className={`text-1xl text-[#565656] lg:text-2xl`}>
                           {item.subtitle}
