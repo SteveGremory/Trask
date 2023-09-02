@@ -79,7 +79,7 @@ export default function Home() {
     <div className="relative h-auto">
       <Image
         src={background}
-        className="h-auto object-cover object-center"
+        className="h-auto object-cover object-center brightness-[0.30]"
         fill
         alt="Background"
       />
