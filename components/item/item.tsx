@@ -13,6 +13,7 @@ interface Props {
   items: ItemInterface[];
   setItems: Dispatch<SetStateAction<ItemInterface[]>>;
   store: Store;
+  settingsStore: Store;
 }
 
 const Item: NextPage<Props> = (props) => {
@@ -23,6 +24,7 @@ const Item: NextPage<Props> = (props) => {
     subtitle: "",
     notes: "",
     key: "",
+    tags: [],
   });
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -93,6 +95,7 @@ const Item: NextPage<Props> = (props) => {
         onOpenChange={onOpenChange}
         item={currentItem}
         itemSetter={setCurrentItem}
+        store={props.settingsStore}
         onClose={async () => {
           await store.set(currentItem.key, currentItem);
           props.setItems(await fetchItems(store));

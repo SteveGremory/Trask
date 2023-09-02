@@ -36,6 +36,7 @@ export default function Home() {
     subtitle: "",
     notes: "",
     key: "",
+    tags: [],
   });
 
   const [tasks, setTasks] = useState<ItemInterface[]>([]);
@@ -68,6 +69,7 @@ export default function Home() {
       subtitle: "",
       notes: "",
       key: "",
+      tags: [],
     });
     setItemType(type);
     onItemModalOpen();
@@ -136,7 +138,12 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Item items={tasks} store={taskStore} setItems={setTasks} />
+                  <Item
+                    items={tasks}
+                    setItems={setTasks}
+                    store={taskStore}
+                    settingsStore={settingsStore}
+                  />
                 </div>
               </div>
             </div>
@@ -162,7 +169,12 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <Item items={notes} store={noteStore} setItems={setNotes} />
+                  <Item
+                    items={notes}
+                    setItems={setNotes}
+                    store={noteStore}
+                    settingsStore={settingsStore}
+                  />
                 </div>
               </div>
             </div>
@@ -186,6 +198,7 @@ export default function Home() {
         onOpenChange={onItemModalOpenChange}
         item={currentItem}
         itemSetter={setCurrentItem}
+        store={settingsStore}
         onClose={async () => {
           if (!currentItem.title) {
             return;

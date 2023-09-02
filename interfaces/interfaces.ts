@@ -8,5 +8,6 @@ export interface ItemInterface {
   title: string;
   subtitle: string;
   notes: string;
+  tags: string[];
   key: string;
 }
